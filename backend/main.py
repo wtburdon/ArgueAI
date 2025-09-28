@@ -1,3 +1,4 @@
+from controllers.actors import Judge
 from fastapi import FastAPI
 from backend.controllers.debate_store import create_debate, get_debate
 from backend.controllers.request_objects import DebateStartRequest, DebateTurnRequest, DebateJudgeRequest
