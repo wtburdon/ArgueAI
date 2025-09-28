@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+
 from backend.controllers import packet
 
 load_dotenv("backend/.env")
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 class Actor:
