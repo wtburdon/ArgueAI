@@ -55,5 +55,26 @@ class SnowflakeRepository:
             "avg_evidence": result[3],
         }
 
+    def get_arguments_by_debate(self, debate_id: str):
+        """Fetch all arguments in a given debate, ordered by creation time."""
+        cur = self.conn.cursor()
+        cur.execute("""
+                    SELECT argument_id, role, content, created_at
+                    FROM arguments
+                    WHERE debate_id = %s
+                    ORDER BY created_at ASC
+                """, (debate_id,))
+        rows = cur.fetchall()
+        cur.close()
+        return [
+            {
+                "argument_id": row[0],
+                "role": row[1],
+                "content": row[2],
+                "created_at": row[3],
+            }
+            for row in rows
+        ]
+
     def close(self):
         self.conn.close()
