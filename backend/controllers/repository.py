@@ -35,7 +35,7 @@ class SnowflakeRepository:
         cur.execute("""
             INSERT INTO feedback (feedback_id, debate_id, clarity, logic, rhetoric, evidence, comments, created_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (feedback_id, debate_id, clarity, logic, rhetoric, evidence, comments, datetime.utcnow()))
+        """, (feedback_id, debate_id, clarity, logic, rhetoric, evidence, comments, datetime.now()))
         cur.close()
 
     def get_user_stats(self, user_id: str):
