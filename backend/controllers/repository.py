@@ -18,7 +18,7 @@ class SnowflakeRepository:
         cur.execute("""
             INSERT INTO debates (debate_id, user_id, topic, created_at)
             VALUES (%s, %s, %s, %s)
-        """, (debate_id, user_id, topic, datetime.utcnow()))
+        """, (debate_id, user_id, topic, datetime.now()))
         cur.close()
 
     def save_argument(self, arg_id: str, debate_id: str, role: str, content: str):
@@ -26,7 +26,7 @@ class SnowflakeRepository:
         cur.execute("""
             INSERT INTO arguments (argument_id, debate_id, role, content, created_at)
             VALUES (%s, %s, %s, %s, %s)
-        """, (arg_id, debate_id, role, content, datetime.utcnow()))
+        """, (arg_id, debate_id, role, content, datetime.now()))
         cur.close()
 
     def save_feedback(self, feedback_id: str, debate_id: str, clarity: float, logic: float,
