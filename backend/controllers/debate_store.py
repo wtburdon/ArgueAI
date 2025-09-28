@@ -14,3 +14,6 @@ def create_debate(topic: str) -> Debate:
 
 def get_debate(debate_id: int) -> Debate | None:
     return debates.get(debate_id)
+
+def remove_debate(debate_id: int) -> bool:
+    return debates.pop(debate_id, None) is not None
