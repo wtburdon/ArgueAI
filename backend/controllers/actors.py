@@ -26,6 +26,5 @@ class Judge(Actor):
         super().__init__()
         self._chat.send_message(packet.JUDGE_PROMPT)
 
-    def prompt(self, player_position: str, opponent_position: str) -> dict:
-        response = self._chat.send_message()
-        pass
+    def prompt(self, transcript):
+        return self._chat.send_message(transcript).text

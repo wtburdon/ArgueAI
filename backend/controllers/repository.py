@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 import snowflake.connector
 from datetime import datetime
+
+load_dotenv()
 
 class SnowflakeRepository:
     def __init__(self):
@@ -10,7 +13,8 @@ class SnowflakeRepository:
             account=os.getenv("SNOWFLAKE_ACCOUNT"),
             warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
             database=os.getenv("SNOWFLAKE_DATABASE"),
-            schema=os.getenv("SNOWFLAKE_SCHEMA")
+            schema=os.getenv("SNOWFLAKE_SCHEMA"),
+            role=os.getenv("SNOWFLAKE_ROLE")
         )
 
     def create_debate(self, debate_id: str, user_id: str, topic: str):
