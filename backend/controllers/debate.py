@@ -1,12 +1,16 @@
-from backend.controllers.actors import Opponent, Judge
+from backend.controllers.actors import Opponent, Judge, Repository
 from collections import defaultdict
 import uuid
+import json
 
 class Debate:
     def __init__(self,debate_id, topic):
         self.debate_id = debate_id
         self.topic = topic
         self.uuid = uuid.uuid4()
+
+        self.repo = Repository()
+        self.repo.create_debate(str(self.uuid), "user_123", topic)
 
         self.judge = Judge()
 
@@ -15,11 +19,17 @@ class Debate:
 
         self.transcript = defaultdict(dict)
 
+        
+
     def run_turn(self, user_content):
         argument_id = uuid.uuid4()
         self.transcript[argument_id]["player"] = user_content
-
+        
+        self.repo.save_argument(str(argument_id), str(self.uuid), "player", user_content)
+        
         opponent_content = self.opponent.prompt(user_content)
+
+        self.repo.save_argument(str(argument_id), str(self.uuid), "opponent", opponent_content)
 
         self.transcript[argument_id]["opponent"] = opponent_content
 
@@ -35,4 +45,21 @@ class Debate:
         return "\n".join(lines)
 
     def run_judge(self):
-        return self.judge.prompt(self._format_transcript())
+        
+        feedback = self.judge.prompt(self._format_transcript())
+
+        feedback = feedback.replace(r"\n","")
+        feedback = feedback.replace("\\", "")
+
+        feedback_id = uuid.uuid4()
+
+        feedback_json = json.loads(feedback)
+
+        clarity = feedback_json["scores"]["user"]["clarity"]
+        logic = feedback_json["scores"]["user"]["reasoning"]
+        rhetoric = feedback_json["scores"]["user"]["persuasiveness"]
+        evidence = feedback_json["scores"]["user"]["evidence"]
+
+        self.repo.save_feedback(str(feedback_id), str(self.uuid), clarity, logic, rhetoric, evidence, feedback)
+
+        return feedback
