@@ -10,14 +10,15 @@ class SnowflakeRepository:
             account=os.getenv("SNOWFLAKE_ACCOUNT"),
             warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
             database=os.getenv("SNOWFLAKE_DATABASE"),
-            schema=os.getenv("SNOWFLAKE_SCHEMA")
+            schema=os.getenv("SNOWFLAKE_SCHEMA"),
+            role=os.getenv("SNOWFLAKE_ROLE")
         )
 
     def create_debate(self, debate_id: str, user_id: str, topic: str):
         cur = self.conn.cursor()
         cur.execute("""
             INSERT INTO debates (debate_id, user_id, topic, created_at)
-            VALUES (%s, %s, %s, %s)
+            VALUES (?, ?, ?, ?)
         """, (debate_id, user_id, topic, datetime.now()))
         cur.close()
 
@@ -25,7 +26,7 @@ class SnowflakeRepository:
         cur = self.conn.cursor()
         cur.execute("""
             INSERT INTO arguments (argument_id, debate_id, role, content, created_at)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?)
         """, (arg_id, debate_id, role, content, datetime.now()))
         cur.close()
 
@@ -34,7 +35,7 @@ class SnowflakeRepository:
         cur = self.conn.cursor()
         cur.execute("""
             INSERT INTO feedback (feedback_id, debate_id, clarity, logic, rhetoric, evidence, comments, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (feedback_id, debate_id, clarity, logic, rhetoric, evidence, comments, datetime.now()))
         cur.close()
 
@@ -44,7 +45,7 @@ class SnowflakeRepository:
             SELECT AVG(clarity), AVG(logic), AVG(rhetoric), AVG(evidence)
             FROM feedback f
             JOIN debates d ON f.debate_id = d.debate_id
-            WHERE d.user_id = %s
+            WHERE d.user_id = ?
         """, (user_id,))
         result = cur.fetchone()
         cur.close()
@@ -61,7 +62,7 @@ class SnowflakeRepository:
         cur.execute("""
                     SELECT argument_id, role, content, created_at
                     FROM arguments
-                    WHERE debate_id = %s
+                    WHERE debate_id = ?
                     ORDER BY created_at ASC
                 """, (debate_id,))
         rows = cur.fetchall()
